@@ -17,6 +17,13 @@ def register():
     else:
         return "Please send POST requests"
 
+@app.route("/login", endpoint='login', methods=['POST'])
+def login():
+    if request.method == 'POST':
+        req_data = json.loads(request.data)
+        first_name = req_data['username']
+        password = req_data['password']
+        
 
 if __name__ == '__main__':
     with app.app_context():
