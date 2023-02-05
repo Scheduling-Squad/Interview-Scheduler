@@ -1,31 +1,20 @@
+import sys
+import os
+
+sys.path.append(os.path.abspath('.'))
 from application import app
-from application.temp import db, Employee
+from application.mongo import get_db
 from flask import request, json, make_response
 
+db = get_db()
 
-@app.route("/register", endpoint='register', methods=['POST'])
-def register():
-    if request.method == 'POST':
-        req_data = json.loads(request.data)
-        first_name = req_data['username']
-        password = req_data['password']
-        sample = Employee(first_name, password)
-        db.session.add(sample)
-        db.session.commit()
-        response = make_response("<h1>Success</h1>",200)
-        return response
-    else:
-        return "Please send POST requests"
 
-@app.route("/login", endpoint='login', methods=['POST'])
-def login():
-    if request.method == 'POST':
-        req_data = json.loads(request.data)
-        first_name = req_data['username']
-        password = req_data['password']
-        
+@app.route("/addinterview", endpoint='addinterview', methods=['POST'])
+def addinterview():
+    pass
+
 
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-    app.run()
+    app.run(host='0.0.0.0')
