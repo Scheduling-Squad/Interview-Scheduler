@@ -14,7 +14,7 @@ collection = db['schedule']
 CORS(app)
 
 
-@app.route('/home', method=['GET'])
+@app.route('/home', method=['GET', 'DELETE'])
 def home_page():
     # GET Interview data from database
     if request.method == 'GET':
@@ -44,6 +44,13 @@ def home_page():
 
         return jsonify(interview_slots)
 
+    if request.method == 'DELETE':
+        body = request.json
+        id = body['interview_id']
+
+        db.schedule.delete_one({'interview_id': id})
+        print('\n # Deletion successful # \n')
+        return jsonify({'status': 'Interview ID: ' + id + ' is deleted!'})
 
 @app.route('/NewInterview', method=['POST', 'GET'])
 def schedule_interview():
