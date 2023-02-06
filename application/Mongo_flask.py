@@ -44,6 +44,7 @@ def home_page():
 
         return jsonify(interview_slots)
 
+    # DELETE a interview slot
     if request.method == 'DELETE':
         body = request.json
         id = body['interview_id']
@@ -110,15 +111,88 @@ def schedule_interview():
             "Employees": employees_id,
             "date": date,
             "interview_start_time": start_time,
-            "interview_end_time": end_time
+            "interview_end_time": end_time,
+            "status": False
         })
         return jsonify({
-            'status': 'Data is posted to MongoDB!',
+            'status': 'Scheduled an interview for the candidate '+candidate_id,
             'InterviewID': ID,
             'Date': date,
             'Candidate': candidate,
             'PanelMembers': employees
         })
+
+@app.route('/interview/<string:id>', methods=['GET', 'PUT'])
+def onedata(id):
+
+    # GET a specific interview data by interview id
+    if request.method == 'GET':
+
+        result = collection.aggregate([
+            {
+                '$lookup': {'from': 'employee', 'localField': 'Employees', 'foreignField': '_id', 'as': 'Employees'}
+            },
+            {
+                "$lookup": {'from': 'candidate', 'localField': 'Candidate', 'foreignField': '_id', 'as': 'Candidate'}
+            },
+
+            {
+                "$project": {
+                    "_id": 0,
+                    "interview_id": 1,
+                    "Employees": "$Employees.e_id",
+                    "Candidate": "$Candidate.c_id",
+                    "date": 1,
+                    "interview_start_time": 1,
+                    "interview_end_time": 1,
+                    "status": 1
+                }
+            },
+            {
+                "$match": {"interview_id": id}
+            }
+        ])
+
+        interview = []
+        for c in result:
+            interview.append(dict(c))
+
+        return jsonify(interview[0])
+
+    # UPDATE a interview slot details by id
+    if request.method == 'PUT':
+        body = request.json
+
+        ID = body['InterviewID']
+        candidate = body['Candidate']
+        itm = db.candidate.find_one({"c_id": candidate})
+        candidate_id = itm.get('_id')
+
+        employees = body['Employees']
+        itm = [db.employee.find_one({"e_id": emp}) for emp in employees]
+        employees_id = [item.get('_id') for item in itm]
+
+        start_time = body['StartTime']
+        end_time = body['EndTime']
+        date = body['Date']
+        status = body['status']
+
+        db['schedule'].update_one(
+            {'interview_id': id},
+            {
+                "$set": {
+                    "date": date,
+                    "interview_start_time": start_time,
+                    "interview_end_time": end_time,
+                    "Candidate": candidate_id,
+                    "Employees": employees_id,
+                    "status": status
+                }
+            }
+        )
+
+        return jsonify({'status': 'Interview id: ' + id + ' is updated!'})
+
 
 if __name__ == '__main__':
     app.debug = True
