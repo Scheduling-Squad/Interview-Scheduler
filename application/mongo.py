@@ -1,12 +1,10 @@
 from pymongo import MongoClient
 
 
-def get_db():
-    client = MongoClient(host='test_mongodb',
+def get_client():
+    client = MongoClient(host='interview_mongodb',
                          port=27017,
                          username='root',
                          password='pass',
                          authSource="admin")
-    db = client["interview_db"]
-    return db
-
+    return client

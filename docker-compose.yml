@@ -6,15 +6,15 @@ services:
       - "5000:5000"
   db:
     image: mongo:latest
-    hostname: test_mongodb
+    hostname: interview_mongodb
     environment:
-      - MONGO_INITDB_DATABASE=animal_db
+      - MONGO_INITDB_DATABASE=interview_db
       - MONGO_INITDB_ROOT_USERNAME=root
       - MONGO_INITDB_ROOT_PASSWORD=pass
     volumes:
       - ./init-db.js:/docker-entrypoint-initdb.d/init-db.js:ro
-      - inter:/data/db
+      - scheduler2:/data/db
     ports:
       - "27017:27017"
 volumes:
-  inter:
+  scheduler2:

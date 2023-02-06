@@ -5,31 +5,31 @@ db.interview_tb.drop();
 
 db.employee_tb.insertMany([
     {
-        "id": 1,
-        "name": "Selva"
+        "e_id": 1,
+        "e_name": "Selva"
     },
     {
-        "id": 2,
-        "name": "Ramu"
+        "e_id": 2,
+        "e_name": "Ramu"
     },
     {
-        "id": 3,
-        "name": "Sai"
+        "e_id": 3,
+        "e_name": "Sai"
     },
 ]);
 
 db.candidate_tb.insertMany([
     {
-        "id": 1,
-        "name": "Shankar"
+        "c_id": 1,
+        "c_name": "Shankar"
     },
     {
-        "id": 2,
-        "name": "Thiru"
+        "c_id": 2,
+        "c_name": "Thiru"
     },
     {
-        "id": 3,
-        "name": "Bala"
+        "c_id": 3,
+        "c_name": "Bala"
     },
 ]);
 
@@ -38,9 +38,9 @@ db.interview_tb.insertMany([
         "id": 1,
         "Candidate": 1,
         "Employees": [1, 2],
-        "date": date(12, 02, 2023),
+        "date": Date("2023-02-14"),
         "interview_start_time": ISODate("2023-02-08T12:30"),
         "interview_start_time": ISODate("2023-02-08T13:30"),
-        "status": False
+        "status": false
     },
 ]);
