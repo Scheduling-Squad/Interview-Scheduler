@@ -13,6 +13,38 @@ collection = db['schedule']
 
 CORS(app)
 
+
+@app.route('/home', method=['GET'])
+def home_page():
+    # GET Interview data from database
+    if request.method == 'GET':
+        result = collection.aggregate([
+            {
+                '$lookup': {'from': 'employee', 'localField': 'Employees', 'foreignField': '_id', 'as': 'Employees'}
+            },
+            {
+                "$lookup": {'from': 'candidate', 'localField': 'Candidate', 'foreignField': '_id', 'as': 'Candidate'}
+            },
+            {
+                "$project": {
+                    "_id": 0,
+                    "interview_id": 1,
+                    "Employees": "$Employees.e_id",
+                    "Candidate": "$Candidate.c_id",
+                    "date": 1,
+                    "interview_start_time": 1,
+                    "interview_end_time": 1,
+                    "status": 1
+                }
+            }
+        ])
+        interview_slots = []
+        for c in result:
+            interview_slots.append(dict(c))
+
+        return jsonify(interview_slots)
+
+
 @app.route('/NewInterview', method=['POST', 'GET'])
 def schedule_interview():
 
@@ -47,7 +79,7 @@ def schedule_interview():
         print(dataJson)
         return jsonify(dataJson)
 
-    # POST a data to database
+    # POST interview data to database
     if request.method == 'POST':
         body = request.json
 
