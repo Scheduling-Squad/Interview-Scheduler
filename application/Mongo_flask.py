@@ -1,4 +1,4 @@
-from __init__ import app
+from application import app
 from flask import jsonify, request
 from pymongo import MongoClient
 from flask_cors import CORS
@@ -75,21 +75,21 @@ def schedule_interview():
             id = data['e_id']
             name = data['e_name']
             emp_dataDict = {
-                'EmployeeID': str(id),
-                'EmployeeName': name,
+                'employee_id': str(id),
+                'employee_name': name,
             }
             EmployeeJson.append(emp_dataDict)
         for data in candidate_data:
             id = data['c_id']
             name = data['c_name']
             can_dataDict = {
-                'CandidateID': str(id),
-                'CandidateName': name,
+                'candidate_id': str(id),
+                'candidate_name': name,
             }
             CandidateJson.append(can_dataDict)
 
-        dataJson = {"Candidate data" : CandidateJson,
-                     "Employee data" : EmployeeJson}
+        dataJson = {"candidate data" : CandidateJson,
+                     "employee data" : EmployeeJson}
 
         print(dataJson)
         return jsonify(dataJson)
@@ -98,7 +98,7 @@ def schedule_interview():
     if request.method == 'POST':
         body = request.json
 
-        ID = body['InterviewID']
+        ID = body['interview_id']
         candidate = body['candidate']
         itm = db.candidate.find_one({"c_id": candidate})
         candidate_id = itm.get('_id')
@@ -107,7 +107,7 @@ def schedule_interview():
         itm = [db.employee.find_one({"e_id": emp}) for emp in employees]
         employees_id = [item.get('_id') for item in itm]
 
-        start_time = body['status']
+        status = body['status']
         date = body['date']
 
         # db.users.insert_one({
@@ -116,16 +116,15 @@ def schedule_interview():
             "candidate": candidate_id,
             "employees": employees_id,
             "date": date,
-            "interview_start_time": start_time,
-            "interview_end_time": end_time,
+            "status": status,
             "status": False
         })
         return jsonify({
             'status': 'Scheduled an interview for the candidate '+candidate_id,
-            'InterviewID': ID,
-            'Date': date,
-            'Candidate': candidate,
-            'PanelMembers': employees
+            'interview_id': ID,
+            'date': date,
+            'candidate': candidate,
+            'panel_members': employees
         })
 
 @app.route('/interview/<string:id>', methods=['GET', 'PUT'])
@@ -136,10 +135,10 @@ def onedata(id):
 
         result = collection.aggregate([
             {
-                '$lookup': {'from': 'employee', 'localField': 'Employees', 'foreignField': '_id', 'as': 'Employees'}
+                '$lookup': {'from': 'employee', 'localField': 'employees', 'foreignField': '_id', 'as': 'employees'}
             },
             {
-                "$lookup": {'from': 'candidate', 'localField': 'Candidate', 'foreignField': '_id', 'as': 'Candidate'}
+                "$lookup": {'from': 'candidate', 'localField': 'candidate', 'foreignField': '_id', 'as': 'candidate'}
             },
 
             {
