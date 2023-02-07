@@ -1,9 +1,8 @@
-from flask import Flask, render_template, request, jsonify
+from __init__ import app
+from flask import jsonify, request
 from pymongo import MongoClient
-from bson.objectid import ObjectId
 from flask_cors import CORS
 
-app = Flask(__name__)
 user_name = "HR"
 pass_ = "Password123"
 
@@ -29,8 +28,8 @@ def home_page():
                 "$project": {
                     "_id": 0,
                     "interview_id": 1,
-                    "Employees": "$Employees.e_id",
-                    "Candidate": "$Candidate.c_id",
+                    "Employees": ["$Employees.e_id", "$Employees.e_name"],
+                    "Candidate": ["$Candidate.c_id", "$Candidate.c_name"],
                     "date": 1,
                     "interview_start_time": 1,
                     "interview_end_time": 1,
@@ -41,6 +40,11 @@ def home_page():
         interview_slots = []
         for c in result:
             interview_slots.append(dict(c))
+
+        for interview in interview_slots:
+            interview['Employees'] = list(
+                map(lambda x: {"id": x[0], "name": x[1]}, zip(interview['Employees'][0], interview['Employees'][1])))
+            interview['Candidate'] = {"id": interview['Candidate'][0][0], "name": interview['Candidate'][1][0]}
 
         return jsonify(interview_slots)
 
@@ -192,8 +196,3 @@ def onedata(id):
         )
 
         return jsonify({'status': 'Interview id: ' + id + ' is updated!'})
-
-
-if __name__ == '__main__':
-    app.debug = True
-    app.run()
