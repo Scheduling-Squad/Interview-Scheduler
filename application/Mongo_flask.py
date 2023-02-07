@@ -182,7 +182,7 @@ def onedata(id):
         status = body['status']
 
         db['schedule'].update_one(
-            {'interview_id': id},
+            {'interview_id': ID},
             {
                 "$set": {
                     "date": date,
