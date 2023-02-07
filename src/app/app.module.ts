@@ -12,6 +12,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { UpdateScheduleComponent } from './pages/update-schedule/update-schedule.component';
 import { MatButtonModule } from '@angular/material/button';
 import { NewInterviewComponent } from './pages/new-interview/new-interview.component';
+import { HttpClientModule } from '@angular/common/http';
 @NgModule({
   declarations: [
     AppComponent,
@@ -28,6 +29,7 @@ import { NewInterviewComponent } from './pages/new-interview/new-interview.compo
     MatMenuModule,
     MatIconModule,
     MatButtonModule,
+    HttpClientModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

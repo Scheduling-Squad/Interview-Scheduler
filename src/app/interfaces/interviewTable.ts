@@ -1,5 +1,5 @@
-export class InterviewTable {
-  id?: number;
-  candidateName?: string;
-  interviewTime?: string;
-}
+// export class InterviewTable {
+//   id?: number;
+//   candidateName?: string;
+//   interviewTime?: string;
+// }

@@ -1,0 +1,48 @@
+[
+  {
+    "date": {
+      "year": 2002,
+      "month": 12,
+      "day": 4
+    },
+    "interview_id": 1,
+    "slot": 1,
+    "employees": [
+      {
+        "id": 1,
+        "name": "Selva"
+      },
+      {
+        "id": 2,
+        "name": "Thiru"
+      }
+    ],
+    "candidate": {
+      "id": 1,
+      "name": "Ram"
+    }
+  },
+  {
+    "date": {
+      "year": 2002,
+      "month": 12,
+      "day": 4
+    },
+    "interview_id": 2,
+    "slot": 2,
+    "employees": [
+      {
+        "id": 1,
+        "name": "Selva"
+      },
+      {
+        "id": 3,
+        "name": "Sai karthik"
+      }
+    ],
+    "candidate": {
+      "id": 2,
+      "name": "Shankar"
+    }
+  }
+]
