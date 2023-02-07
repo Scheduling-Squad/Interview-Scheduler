@@ -19,18 +19,21 @@ def home_page():
     if request.method == 'GET':
         result = collection.aggregate([
             {
-                '$lookup': {'from': 'employee', 'localField': 'Employees', 'foreignField': '_id', 'as': 'Employees'}
+                '$lookup': {'from': 'employee', 'localField': 'employees', 'foreignField': '_id', 'as': 'employees'}
             },
             {
-                "$lookup": {'from': 'candidate', 'localField': 'Candidate', 'foreignField': '_id', 'as': 'Candidate'}
+                "$lookup": {'from': 'candidate', 'localField': 'candidate', 'foreignField': '_id', 'as': 'candidate'}
             },
             {
                 "$project": {
                     "_id": 0,
                     "interview_id": 1,
-                    "Employees": ["$Employees.e_id", "$Employees.e_name"],
-                    "Candidate": ["$Candidate.c_id", "$Candidate.c_name"],
-                    "date": 1,
+                    "employees": ["$employees.e_id", "$employees.e_name"],
+                    "candidate": ["$candidate.c_id", "$candidate.c_name"],
+                    "date": {"Year": {"$year": "$date"},
+                             "Month": {"$month": "$date"},
+                             "Day": {"$dayOfMonth": "$date"}
+                             },
                     "interview_start_time": 1,
                     "interview_end_time": 1,
                     "status": 1
@@ -42,9 +45,9 @@ def home_page():
             interview_slots.append(dict(c))
 
         for interview in interview_slots:
-            interview['Employees'] = list(
-                map(lambda x: {"id": x[0], "name": x[1]}, zip(interview['Employees'][0], interview['Employees'][1])))
-            interview['Candidate'] = {"id": interview['Candidate'][0][0], "name": interview['Candidate'][1][0]}
+            interview['employees'] = list(
+                map(lambda x: {"id": x[0], "name": x[1]}, zip(interview['employees'][0], interview['employees'][1])))
+            interview['candidate'] = {"id": interview['candidate'][0][0], "name": interview['candidate'][1][0]}
 
         return jsonify(interview_slots)
 
@@ -96,23 +99,22 @@ def schedule_interview():
         body = request.json
 
         ID = body['InterviewID']
-        candidate = body['Candidate']
+        candidate = body['candidate']
         itm = db.candidate.find_one({"c_id": candidate})
         candidate_id = itm.get('_id')
 
-        employees = body['Employees']
+        employees = body['employees']
         itm = [db.employee.find_one({"e_id": emp}) for emp in employees]
         employees_id = [item.get('_id') for item in itm]
 
-        start_time = body['StartTime']
-        end_time = body['EndTime']
-        date = body['Date']
+        start_time = body['status']
+        date = body['date']
 
         # db.users.insert_one({
         db['schedule'].insert_one({
             "interview_id": ID,
-            "Candidate": candidate_id,
-            "Employees": employees_id,
+            "candidate": candidate_id,
+            "employees": employees_id,
             "date": date,
             "interview_start_time": start_time,
             "interview_end_time": end_time,
