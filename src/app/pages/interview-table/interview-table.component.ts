@@ -31,8 +31,33 @@ export class InterviewTableComponent implements OnInit {
     'candidateName',
     'actions',
   ];
-  //dataSource = ELEMENT_DATA;
 
+  //dataSource = ELEMENT_DATA;
+  getTiming(slot: number) {
+    switch (slot) {
+      case 1: {
+        return '8:00AM-9:00AM';
+      }
+      case 2: {
+        return '9:00AM-10:00AM';
+      }
+      case 3: {
+        return '10:00AM-11:00AM';
+      }
+      case 4: {
+        return '11:00AM-12:00AM';
+      }
+      case 5: {
+        return '2:00PM-3:00PM';
+      }
+      case 6: {
+        return '3:00PM-4:00PM';
+      }
+      default: {
+        return 'Rejected';
+      }
+    }
+  }
   OnDelete() {
     if (confirm('Are you sure to delete ')) {
     }
@@ -40,7 +65,7 @@ export class InterviewTableComponent implements OnInit {
   OnUpdate() {
     this.router.navigate(['/updateschedule']);
   }
-  ngOnInit() {
+  getInterviews() {
     this.candidateService.getInterviewTableData().subscribe({
       next: (data) => {
         console.log(data);
@@ -48,5 +73,8 @@ export class InterviewTableComponent implements OnInit {
         this.interviews = data;
       },
     });
+  }
+  ngOnInit() {
+    this.getInterviews();
   }
 }

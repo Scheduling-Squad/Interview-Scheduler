@@ -1,1 +1,57 @@
-<p>new-interview works!</p>
+<div class="">
+  <mat-form-field>
+    <mat-label>Choose Date</mat-label>
+    <input matInput [matDatepicker]="dp3" (dateChanged)="onDateSelect()" />
+    <mat-hint>MM/DD/YYYY</mat-hint>
+    <mat-datepicker-toggle matIconSuffix [for]="dp3"></mat-datepicker-toggle>
+    <mat-datepicker #dp3 disabled="false"></mat-datepicker>
+  </mat-form-field>
+  <button mat-button [matMenuTriggerFor]="menu">Slot</button>
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item>8:00AM-9:00AM</button>
+    <button mat-menu-item>9:00AM-10:00AM</button>
+    <button mat-menu-item>10:00AM-11:00AM</button>
+    <button mat-menu-item>11:00AM-12:00AM</button>
+    <button mat-menu-item>2:00PM-3:00PM</button>
+    <button mat-menu-item>3:00PM-4:00PM</button>
+  </mat-menu>
+  <form>
+    <mat-form-field class="example-chip-list" appearance="fill">
+      <mat-label>Employees</mat-label>
+      <mat-chip-grid #chipGrid aria-label="Fruit selection">
+        <mat-chip-row *ngFor="let fruit of fruits" (removed)="remove(fruit)">
+          {{ fruit }}
+          <button matChipRemove [attr.aria-label]="'remove ' + fruit">
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </mat-chip-row>
+      </mat-chip-grid>
+      <input
+        placeholder="Add employee"
+        #fruitInput
+        [formControl]="fruitCtrl"
+        [matChipInputFor]="chipGrid"
+        [matAutocomplete]="auto"
+        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+        (matChipInputTokenEnd)="add($event)"
+      />
+      <mat-autocomplete
+        #auto="matAutocomplete"
+        (optionSelected)="selected($event)"
+      >
+        <mat-option
+          *ngFor="let fruit of filteredFruits | async"
+          [value]="fruit"
+        >
+          {{ fruit }}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+  </form>
+  <button mat-button [matMenuTriggerFor]="menu">Menu</button>
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item *ngFor="let employee of allEmployees">
+      {{ employee.name }}
+    </button>
+  </mat-menu>
+</div>

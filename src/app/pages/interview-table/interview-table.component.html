@@ -29,7 +29,7 @@
 
     <ng-container matColumnDef="slot">
       <th mat-header-cell *matHeaderCellDef>Slot</th>
-      <td mat-cell *matCellDef="let element">{{ element.slot }}</td>
+      <td mat-cell *matCellDef="let element">{{ getTiming(element.slot) }}</td>
     </ng-container>
 
     <ng-container matColumnDef="candidateName">
